@@ -115,15 +115,52 @@ class Set extends React.Component {
 
 class AlertView extends React.Component {
   state = { 
-    latitude: '',
-    longitude: '',
     address: ''
   }
 
+  findCoordinates = (cb) => {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const location = JSON.stringify(position)
+        const latitude = position.coords.latitude
+        const longitude = position.coords.longitude
+        console.log("lat, lon = " + latitude + ", " + longitude)
+        this.translateCoordinates(latitude, longitude, cb)
+      },
+      error => Alert.alert(error.message),
+      { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
+    )
+
+  }
+
+  translateCoordinates = (lat, lon, cb) => {
+    const key = "dcb0c0c270922b"
+
+    console.log("I'm about to fetch")
+    fetch('http://us1.locationiq.com/v1/reverse.php?key=' + key + '&lat=' + lat + '&lon=' + lon + '&format=json')
+    .then((response) => {
+      console.log(response)
+      return response.json() 
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+    .then((address) => {
+      console.log(address)
+      this.setState({ address: address.display_name })
+      
+      // then call callback
+      cb()
+    })
+  }
+    
+
   // setters
   sendSms = (message) => {
-    //let msg = message + address
-    //console.log(this.state.address)
+    this.findCoordinates(() => {
+      let msg = message + this.state.address
+      console.log(msg)
+    })
   }
 
   render() {
