@@ -12,11 +12,6 @@ import {Alert, Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Butt
 import {StackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
 
 export default class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = { alertMsg: '' }
-  }
-
   render() {
     return <AppCont/>;
   }
@@ -118,34 +113,17 @@ class Set extends React.Component {
   }
 }
 
-class Alert extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = { 
-      latitude: '',
-      longitude: '',
-      address: ''
-    }
+class AlertView extends React.Component {
+  state = { 
+    latitude: '',
+    longitude: '',
+    address: ''
   }
 
-  
   // setters
-  setLatitude(lat){
-    this.setState(text => {latitude: lat})
-  }
-
-  setLongitude(lon){
-    this.setState(text => {longitude: lon})
-  }
-
-  setAddress(addr){
-    this.setState(text => {address: addr})
-  }
-
   sendSms = (message) => {
-
     //let msg = message + address
-    console.log(this.state.address)
+    //console.log(this.state.address)
   }
 
   render() {
@@ -207,7 +185,7 @@ class Alert extends React.Component {
 }
 const MyNavigator = createSwitchNavigator({
   HomeScreen: Home,
-  StartAlert: Alert,
+  StartAlert: AlertView,
   ContactPerson: Set
   });
 
