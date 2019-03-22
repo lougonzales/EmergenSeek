@@ -7,9 +7,10 @@ import traffic from './images/traffic.png'
 import domestic from './images/domestic.png'
 import disaster from './images/disaster.png'
 
-import React, {Component} from 'react';
-import {AsyncStorage, Alert, Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Button, TextInput} from 'react-native';
-import {StackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
+import React, {Component} from 'react'
+import SendSMS from 'react-native-sms'
+import {AsyncStorage, Alert, Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Button, TextInput} from 'react-native'
+import {StackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation'
 
 export default class App extends React.Component {
   render() {
@@ -76,11 +77,15 @@ class Set extends React.Component {
     this.setState({ number: text })
   }
 
-  componentDidMount = () => AsyncStorage.getItem('number').then((value) => this.setState({ 'number': value }))
+  componentDidMount = () => {
+    AsyncStorage.getItem('number').then((value) => this.setState({ 'number': value }))
+    AsyncStorage.getItem('person').then((value) => this.setState({ 'person': value }))
+  }
 
   setNumber = () => {
-    console.log("Saved number to db")
+    console.log("Saved number and name to db")
     AsyncStorage.setItem('number', this.state.number);
+    AsyncStorage.setItem('person', this.state.person);
   }
 
   render() {
@@ -132,7 +137,14 @@ class Set extends React.Component {
 
 class AlertView extends React.Component {
   state = { 
-    address: ''
+    address: '',
+    number: '',
+    person: ''
+  }
+
+  componentDidMount = () => {
+    AsyncStorage.getItem('number').then((value) => this.setState({ 'number': value }))
+    AsyncStorage.getItem('person').then((value) => this.setState({ 'person': value }))
   }
 
   findCoordinates = (cb) => {
@@ -171,12 +183,26 @@ class AlertView extends React.Component {
     })
   }
     
-
   // setters
   sendSms = (message) => {
     this.findCoordinates(() => {
-      let msg = message + this.state.address
-      console.log(msg)
+      let msg = this.state.person === '' ? message + this.state.address : this.state.person + ", " + message + this.state.address
+      SendSMS.send({
+        //Message body
+        body: msg,
+        //Recipients Number
+        recipients: [this.state.number],
+        //An array of types that would trigger a "completed" response when using android
+        successTypes: ['sent', 'queued']
+      }, (completed, cancelled, error) => {
+        if(completed){
+          console.log('SMS Sent Completed');
+        }else if(cancelled){
+          console.log('SMS Sent Cancelled');
+        }else if(error){
+          console.log('Some error occured');
+        }
+      });
     })
   }
 
@@ -203,7 +229,7 @@ class AlertView extends React.Component {
                     </View>
                     <View style={s.col}>
                         <TouchableOpacity
-                            onPress={() => alert("I'm in a traffic accident. I'm at ")}
+                            onPress={() => this.sendSms("I'm in a traffic accident. I'm at ")}
                             style={s.button}
                         >
                             <Image source={traffic} style={s.icon}/>
@@ -214,7 +240,7 @@ class AlertView extends React.Component {
                 <View style={s.row}>
                     <View style={s.col}>
                         <TouchableOpacity
-                            onPress={() => alert("I'm in a domestic accident. I'm at ")}
+                            onPress={() => this.sendSms("I'm in a domestic accident. I'm at ")}
                             style={s.button}
                         >
                             <Image source={domestic} style={s.icon}/>
@@ -223,7 +249,7 @@ class AlertView extends React.Component {
                     </View>
                     <View style={s.col}>
                         <TouchableOpacity
-                            onPress={() => alert("Help! There's a natural disaster at ")}
+                            onPress={() => this.sendSms("Help! There's a natural disaster at ")}
                             style={s.button}
                         >
                             <Image source={disaster} style={s.icon}/>
