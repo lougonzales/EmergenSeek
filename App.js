@@ -8,7 +8,7 @@ import domestic from './images/domestic.png'
 import disaster from './images/disaster.png'
 
 import React, {Component} from 'react';
-import {Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
+import {Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Button, TextInput} from 'react-native';
 import {StackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
 
 export default class App extends React.Component {
@@ -43,7 +43,7 @@ class Home extends React.Component {
                 <View style={s.row}>
                     <View style={s.col}>
                         <TouchableOpacity
-                            onPress={() => alert("Traffic Accident")}
+                            onPress={() => this.props.navigation.navigate('ContactPerson')}
                             style={s.button}
                         >
                             <Image source={contactIcon} style={s.icon}/>
@@ -54,7 +54,7 @@ class Home extends React.Component {
                 <View style={s.row}>
                     <View style={s.col}>
                         <TouchableOpacity
-                            onPress={() => this.props.navigation.navigate('SitsScreen')}
+                            onPress={() => this.props.navigation.navigate('StartAlert')}
                             style={s.button}
                         >
                             <Image source={startIcon} style={s.icon}/>
@@ -69,7 +69,58 @@ class Home extends React.Component {
   }
 }
 
-class Sits extends React.Component {
+class Set extends React.Component {
+  state = {
+    person: '',
+    number: ''
+ }
+handlePerson = (text) => {
+  this.setState({ person: text })
+}
+handleNumber = (text) => {
+  this.setState({ number: text })
+}
+  render() {
+    return (
+      <View style={s.container, s.red}>
+        <View style={s.fullScreen}>
+            <View style={s.header}>
+                <View style={s.head}>
+                    <Text style={{fontSize:40}}>Set Emergency Contact Person</Text>
+                </View>
+            </View>
+            <View style={{paddingHorizontal: 20}}>
+                <View style={s.row}>
+                  <View style={s.col}>
+                     <Text>Contact Person</Text>
+                      <TextInput
+                        style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                        onChangeText={this.handlePerson}
+                        value={this.state.text}
+                       />
+                  </View>
+                  <View style={s.col}>
+                      <Text>Contact Number</Text>
+                      <TextInput
+                        style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                        onChangeText={this.handleNumber}
+                        value={this.state.text}
+                      />
+                </View>
+              </View>
+              <View style={s.row}>
+                <TouchableOpacity>
+                  <Text>Save</Text>
+                </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+      </View>
+    );
+  }
+}
+
+class Alert extends React.Component {
   render() {
     return (
       <View style={s.container, s.red}>
@@ -129,8 +180,8 @@ class Sits extends React.Component {
 }
 const MyNavigator = createSwitchNavigator({
   HomeScreen: Home,
-  SitsScreen: Sits,
-
+  StartAlert: Alert,
+  ContactPerson: Set
   });
 
 const AppCont = createAppContainer(MyNavigator);
