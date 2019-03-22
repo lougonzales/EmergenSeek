@@ -8,7 +8,7 @@ import domestic from './images/domestic.png'
 import disaster from './images/disaster.png'
 
 import React, {Component} from 'react';
-import {Alert, Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
+import {AsyncStorage, Alert, Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Button, TextInput} from 'react-native';
 import {StackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
 
 export default class App extends React.Component {
@@ -63,6 +63,7 @@ class Home extends React.Component {
 }
 
 class Set extends React.Component {
+
   state = {
     person: '',
     number: ''
@@ -71,8 +72,17 @@ class Set extends React.Component {
     this.setState({ person: text })
   }
   handleNumber = (text) => {
+    console.log(text)
     this.setState({ number: text })
   }
+
+  componentDidMount = () => AsyncStorage.getItem('number').then((value) => this.setState({ 'number': value }))
+
+  setNumber = () => {
+    console.log("Saved number to db")
+    AsyncStorage.setItem('number', this.state.number);
+  }
+
   render() {
     return (
       <View style={s.container, s.red}>
@@ -89,7 +99,7 @@ class Set extends React.Component {
                       <TextInput
                         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                         onChangeText={this.handlePerson}
-                        value={this.state.text}
+                        value={this.state.person}
                       />
                   </View>
                   <View style={s.col}>
@@ -97,12 +107,12 @@ class Set extends React.Component {
                       <TextInput
                         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                         onChangeText={this.handleNumber}
-                        value={this.state.text}
+                        value={this.state.number}
                       />
                 </View>
               </View>
               <View style={s.row}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={this.setNumber}>
                   <Text>Save</Text>
                 </TouchableOpacity>
                 </View>
