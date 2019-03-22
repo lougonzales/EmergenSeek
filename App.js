@@ -8,7 +8,7 @@ import domestic from './images/domestic.png'
 import disaster from './images/disaster.png'
 
 import React, {Component} from 'react';
-import {Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
+import {Alert, Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
 import {StackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
 
 export default class App extends React.Component {
@@ -16,9 +16,7 @@ export default class App extends React.Component {
     super(props)
     this.state = { alertMsg: '' }
   }
-  setAlertMsg(msg){
-    this.setState(text => {alertMsg: msg})
-  }
+
   render() {
     return <AppCont/>;
   }
@@ -70,6 +68,35 @@ class Home extends React.Component {
 }
 
 class Sits extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { 
+      latitude: '',
+      longitude: '',
+      address: ''
+    }
+  }
+
+  
+  // setters
+  setLatitude(lat){
+    this.setState(text => {latitude: lat})
+  }
+
+  setLongitude(lon){
+    this.setState(text => {longitude: lon})
+  }
+
+  setAddress(addr){
+    this.setState(text => {address: addr})
+  }
+
+  sendSms = (message) => {
+
+    //let msg = message + address
+    console.log(this.state.address)
+  }
+
   render() {
     return (
       <View style={s.container, s.red}>
@@ -84,7 +111,7 @@ class Sits extends React.Component {
                 <View style={s.row}>
                     <View style={s.col}>
                         <TouchableOpacity
-                            onPress={() => alert("First Aid")}
+                            onPress={() => this.sendSms("I need first aid. I'm at ")}
                             style={s.button}
                         >
                             <Image source={aid} style={s.icon}/>
@@ -93,7 +120,7 @@ class Sits extends React.Component {
                     </View>
                     <View style={s.col}>
                         <TouchableOpacity
-                            onPress={() => alert("Traffic Accident")}
+                            onPress={() => alert("I'm in a traffic accident. I'm at ")}
                             style={s.button}
                         >
                             <Image source={traffic} style={s.icon}/>
@@ -104,7 +131,7 @@ class Sits extends React.Component {
                 <View style={s.row}>
                     <View style={s.col}>
                         <TouchableOpacity
-                            onPress={() => alert("Domestic Accident")}
+                            onPress={() => alert("I'm in a domestic accident. I'm at ")}
                             style={s.button}
                         >
                             <Image source={domestic} style={s.icon}/>
@@ -113,7 +140,7 @@ class Sits extends React.Component {
                     </View>
                     <View style={s.col}>
                         <TouchableOpacity
-                            onPress={() => alert("Natural Disaster")}
+                            onPress={() => alert("Help! There's a natural disaster at ")}
                             style={s.button}
                         >
                             <Image source={disaster} style={s.icon}/>
