@@ -112,10 +112,17 @@ class Set extends React.Component {
                 </View>
               </View>
               <View style={s.row}>
-                <TouchableOpacity onPress={this.setNumber}>
-                  <Text>Save</Text>
-                </TouchableOpacity>
+                <View style={s.col}>
+                  <TouchableOpacity onPress={this.setNumber}>
+                    <Text>Save</Text>
+                  </TouchableOpacity>
                 </View>
+                <View style={s.col}>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('HomeScreen')}>
+                    <Text>Back</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
         </View>
       </View>
